@@ -23,6 +23,7 @@ export function Header() {
   const pathname = usePathname();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
   // 스크롤 이벤트 감지
   useEffect(() => {
@@ -86,6 +87,24 @@ export function Header() {
     setSearchQuery("");
     setSearchResults([]);
   };
+
+  // 검색창 외부 클릭 감지
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isSearchActive &&
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target as Node)
+      ) {
+        handleCloseSearch();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSearchActive]);
 
   return (
     <header
@@ -165,10 +184,13 @@ export function Header() {
           isSearchActive ? "w-full gap-2 md:w-auto md:gap-4" : "gap-4" // 모바일 검색 시 gap 최소화
         )}>
           {/* 검색: 버튼 또는 확장형 입력창 */}
-          <div className={cn(
-            "relative flex items-center",
-            isSearchActive && "flex-1 max-w-full" // 검색 활성화 시 전체 너비 사용
-          )}>
+          <div 
+            ref={searchContainerRef}
+            className={cn(
+              "relative flex items-center",
+              isSearchActive && "flex-1 max-w-full" // 검색 활성화 시 전체 너비 사용
+            )}
+          >
             {!isSearchActive ? (
               <button 
                 onClick={() => setIsSearchActive(true)}
