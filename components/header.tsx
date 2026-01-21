@@ -101,48 +101,66 @@ export function Header() {
           : "bg-gradient-to-b from-black/80 to-transparent"
       )}
     >
-      <div className="flex items-center justify-between">
+      <div className={cn(
+        "flex items-center transition-all duration-300",
+        isSearchActive ? "justify-center md:justify-between" : "justify-between" // 모바일 검색 시 중앙 정렬
+      )}>
         
         {/* --- 왼쪽 섹션: 로고 및 내비게이션 --- */}
-        <div className={cn(
-          "flex items-center gap-8 flex-1 relative transition-all duration-300",
-          isSearchActive && "hidden md:flex" // 모바일에서 검색 활성화 시 숨김, 데스크탑에서는 유지
-        )}>
-          {/* 로고 영역 (메뉴가 이 뒤로 숨겨짐) */}
-          <div className="relative z-10 pr-8 overflow-hidden">
-            <Link href="/" className="text-2xl font-bold tracking-tight text-primary md:text-3xl cursor-pointer flex-shrink-0 relative z-20">
-              STREAMIX
-            </Link>
+        {!isSearchActive && (
+          <div className="flex items-center gap-8 flex-1 relative">
+            {/* 로고 영역 (메뉴가 이 뒤로 숨겨짐) */}
+            <div className="relative z-10 pr-8 overflow-hidden">
+              <Link href="/" className="text-2xl font-bold tracking-tight text-primary md:text-3xl cursor-pointer flex-shrink-0 relative z-20">
+                STREAMIX
+              </Link>
+            </div>
+
+            {/* 데스크탑 내비게이션: 검색 활성화 시 로고 뒤로 숨김 */}
+            <nav className="hidden items-center gap-5 md:flex absolute left-[180px] z-0">
+              <NavItem href="/" label="홈" active={pathname === "/"} delay={0} isHiding={false} />
+              <NavItem href="/series" label="시리즈" active={pathname === "/series"} delay={80} isHiding={false} />
+              <NavItem href="/movies" label="영화" active={pathname === "/movies"} delay={160} isHiding={false} />
+              <NavItem href="/trending" label="NEW! 요즘 대세 콘텐츠" active={pathname === "/trending"} delay={240} isHiding={false} />
+              <NavItem href="/my-list" label="내가 찜한 리스트" active={pathname === "/my-list"} delay={320} isHiding={false} />
+            </nav>
+
+            {/* 모바일 메뉴 버튼: 작은 화면에서만 표시 */}
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="flex items-center gap-1 text-sm text-foreground md:hidden"
+            >
+              메뉴
+              <ChevronDown className={cn(
+                "h-4 w-4 transition-transform duration-300",
+                isMobileMenuOpen && "rotate-180"
+              )} />
+            </button>
           </div>
+        )}
 
-          {/* 데스크탑 내비게이션: 검색 활성화 시 로고 뒤로 숨김 */}
-          <nav 
-            className="hidden items-center gap-5 md:flex absolute left-[180px] z-0"
-          >
-            <NavItem href="/" label="홈" active={pathname === "/"} delay={0} isHiding={isSearchActive} />
-            <NavItem href="/series" label="시리즈" active={pathname === "/series"} delay={80} isHiding={isSearchActive} />
-            <NavItem href="/movies" label="영화" active={pathname === "/movies"} delay={160} isHiding={isSearchActive} />
-            <NavItem href="/trending" label="NEW! 요즘 대세 콘텐츠" active={pathname === "/trending"} delay={240} isHiding={isSearchActive} />
-            <NavItem href="/my-list" label="내가 찜한 리스트" active={pathname === "/my-list"} delay={320} isHiding={isSearchActive} />
-          </nav>
-
-          {/* 모바일 메뉴 버튼: 작은 화면에서만 표시 */}
-          <button 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="flex items-center gap-1 text-sm text-foreground md:hidden"
-          >
-            메뉴
-            <ChevronDown className={cn(
-              "h-4 w-4 transition-transform duration-300",
-              isMobileMenuOpen && "rotate-180"
-            )} />
-          </button>
-        </div>
+        {/* 데스크탑에서만: 검색 활성화 시 로고 표시 */}
+        {isSearchActive && (
+          <div className="hidden md:flex items-center gap-8 flex-1 relative">
+            <div className="relative z-10 pr-8 overflow-hidden">
+              <Link href="/" className="text-2xl font-bold tracking-tight text-primary md:text-3xl cursor-pointer flex-shrink-0 relative z-20">
+                STREAMIX
+              </Link>
+            </div>
+            <nav className="hidden items-center gap-5 md:flex absolute left-[180px] z-0">
+              <NavItem href="/" label="홈" active={pathname === "/"} delay={0} isHiding={true} />
+              <NavItem href="/series" label="시리즈" active={pathname === "/series"} delay={80} isHiding={true} />
+              <NavItem href="/movies" label="영화" active={pathname === "/movies"} delay={160} isHiding={true} />
+              <NavItem href="/trending" label="NEW! 요즘 대세 콘텐츠" active={pathname === "/trending"} delay={240} isHiding={true} />
+              <NavItem href="/my-list" label="내가 찜한 리스트" active={pathname === "/my-list"} delay={320} isHiding={true} />
+            </nav>
+          </div>
+        )}
 
         {/* --- 오른쪽 섹션: 검색, 알림, 프로필 --- */}
         <div className={cn(
           "flex items-center gap-4",
-          isSearchActive && "w-full md:w-auto" // 모바일에서 검색 활성화 시 전체 너비
+          isSearchActive && "w-full md:w-auto justify-center md:justify-end" // 모바일에서 검색 활성화 시 전체 너비 + 중앙 정렬
         )}>
           {/* 검색: 버튼 또는 확장형 입력창 */}
           <div className={cn(
