@@ -11,6 +11,8 @@ const nextConfig = {
         pathname: '/t/p/**',
       },
     ],
+    domains: ['image.tmdb.org'],
+    unoptimized: false,
   },
 }
 
