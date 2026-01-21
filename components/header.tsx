@@ -315,7 +315,7 @@ export function Header() {
                     const year = isTV 
                       ? item.first_air_date?.slice(0, 4) 
                       : item.release_date?.slice(0, 4);
-                    const href = isTV ? `/tv/${item.id}` : `/movie/${item.id}`;
+                    const href = isTV ? `/tv-detail?id=${item.id}` : `/movie-detail?id=${item.id}`;
 
                     return (
                       <Link
