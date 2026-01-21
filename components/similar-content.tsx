@@ -26,7 +26,7 @@ function SimilarMovieCard({ movie, hrefBase = "movie" }: { movie: SimilarMovie; 
 
   return (
     <Link
-      href={`/${hrefBase}/${movie.id}`}
+      href={`/${hrefBase}-detail?id=${movie.id}`}
       className="group relative overflow-hidden rounded-md bg-card transition-transform duration-300 hover:scale-105"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

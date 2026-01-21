@@ -109,7 +109,7 @@ export function MovieRow({ title, movies, hrefBase = "movie" }: MovieRowProps) {
               return (
             <Link
               key={movie.id}
-              href={`/${hrefBase}/${movie.id}`}
+              href={`/${hrefBase}-detail?id=${movie.id}`}
               className="min-w-[200px] flex-shrink-0 transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer group relative"
             >
               <div className="relative overflow-hidden rounded-md">
