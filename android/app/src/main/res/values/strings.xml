@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">STREAMIX</string>
+    <string name="title_activity_main">STREAMIX</string>
+    <string name="package_name">com.ledlaputa.streamix</string>
+    <string name="custom_url_scheme">com.ledlaputa.streamix</string>
+</resources>
