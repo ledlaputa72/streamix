@@ -298,7 +298,10 @@ export function Header() {
 
       {/* 메가메뉴 검색 결과 */}
       {isSearchActive && searchQuery.trim() && (
-        <div className="absolute left-0 right-0 top-full mt-1 bg-black/95 backdrop-blur-xl border-t border-white/10 shadow-2xl max-h-[70vh] overflow-y-auto z-50">
+        <div 
+          className="absolute left-0 right-0 top-full mt-1 bg-black/95 backdrop-blur-xl border-t border-white/10 shadow-2xl max-h-[70vh] overflow-y-auto z-50"
+          onClick={(e) => e.stopPropagation()} // 검색 결과 영역 클릭 시 오버레이로 이벤트 전파 방지
+        >
           <div className="px-6 py-6 md:px-12 lg:px-16">
             {isSearching ? (
               <div className="flex items-center justify-center py-12">
@@ -321,7 +324,8 @@ export function Header() {
                     return (
                       <div
                         key={item.id}
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation(); // 이벤트 버블링 방지
                           router.push(href);
                           handleCloseSearch();
                         }}
