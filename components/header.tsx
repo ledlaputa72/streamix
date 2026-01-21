@@ -91,7 +91,9 @@ export function Header() {
     <header
       className={cn(
         // [기본 스타일]: 화면 상단 고정, 최상위 레이어(z-50), 부드러운 색상 변화(duration-300)
-        "fixed top-0 z-50 w-full px-6 py-4 transition-colors duration-300 md:px-12 lg:px-16",
+        "fixed top-0 z-50 w-full py-4 transition-colors duration-300",
+        // 모바일 검색 시 패딩 최소화, 일반 시 패딩 유지
+        isSearchActive ? "px-3 md:px-12 lg:px-16" : "px-6 md:px-12 lg:px-16",
         
         // [조건부 스타일]: 
         // 스크롤 됨 -> 배경색 채움 (bg-background)
@@ -159,13 +161,13 @@ export function Header() {
 
         {/* --- 오른쪽 섹션: 검색, 알림, 프로필 --- */}
         <div className={cn(
-          "flex items-center gap-4",
-          isSearchActive && "w-full md:w-auto justify-center md:justify-end" // 모바일에서 검색 활성화 시 전체 너비 + 중앙 정렬
+          "flex items-center",
+          isSearchActive ? "w-full gap-2 md:w-auto md:gap-4" : "gap-4" // 모바일 검색 시 gap 최소화
         )}>
           {/* 검색: 버튼 또는 확장형 입력창 */}
           <div className={cn(
             "relative flex items-center",
-            isSearchActive && "flex-1" // 검색 활성화 시 전체 너비 사용
+            isSearchActive && "flex-1 max-w-full" // 검색 활성화 시 전체 너비 사용
           )}>
             {!isSearchActive ? (
               <button 
@@ -177,27 +179,27 @@ export function Header() {
             ) : (
               <div 
                 className={cn(
-                  "flex items-center transition-all duration-500 ease-out",
-                  "w-full md:w-[800px]", // 모바일: 전체 너비, 데스크탑: 800px
+                  "flex items-center transition-all duration-500 ease-out w-full",
+                  "md:w-[800px]", // 데스크탑: 800px
                   isSearchActive ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0"
                 )}
               >
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
+                <div className="relative flex-1 w-full">
+                  <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-muted-foreground pointer-events-none" />
                   <input
                     ref={searchInputRef}
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="영화, 시리즈를 검색하세요..."
-                    className="w-full bg-black/50 border border-white/20 rounded-full pl-10 md:pl-12 pr-10 md:pr-12 py-2 md:py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-lg"
+                    className="w-full bg-black/50 border border-white/20 rounded-full pl-9 pr-9 py-2 md:pl-12 md:pr-12 md:py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-lg"
                   />
                   {isSearching ? (
-                    <Loader2 className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground animate-spin" />
+                    <Loader2 className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground animate-spin" />
                   ) : (
                     <button
                       onClick={handleCloseSearch}
-                      className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 text-foreground hover:text-muted-foreground transition-colors p-1 hover:bg-white/10 rounded-full"
+                      className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 text-foreground hover:text-muted-foreground transition-colors p-0.5 hover:bg-white/10 rounded-full"
                     >
                       <X className="h-4 w-4" />
                     </button>
