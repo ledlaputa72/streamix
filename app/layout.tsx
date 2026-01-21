@@ -12,6 +12,12 @@ export const metadata: Metadata = {
   title: 'STREAMIX - 무한한 영화와 시리즈를 즐기세요',
   description: '최신 영화, 인기 시리즈, 오리지널 콘텐츠를 언제 어디서나 감상하세요.',
   generator: 'v0.app',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  },
   icons: {
     icon: [
       {

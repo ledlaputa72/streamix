@@ -192,7 +192,7 @@ export function Header() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="영화, 시리즈를 검색하세요..."
-                    className="w-full bg-black/50 border border-white/20 rounded-full pl-9 pr-9 py-2 md:pl-12 md:pr-12 md:py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-lg"
+                    className="w-full bg-black/50 border border-white/20 rounded-full pl-9 pr-9 py-2 md:pl-12 md:pr-12 md:py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-lg"
                   />
                   {isSearching ? (
                     <Loader2 className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground animate-spin" />
