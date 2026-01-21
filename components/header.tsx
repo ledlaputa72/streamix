@@ -19,6 +19,7 @@ export function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -103,7 +104,10 @@ export function Header() {
       <div className="flex items-center justify-between">
         
         {/* --- 왼쪽 섹션: 로고 및 내비게이션 --- */}
-        <div className="flex items-center gap-8 flex-1 relative">
+        <div className={cn(
+          "flex items-center gap-8 flex-1 relative transition-all duration-300",
+          isSearchActive && "md:flex hidden" // 모바일에서 검색 활성화 시 숨김
+        )}>
           {/* 로고 영역 (메뉴가 이 뒤로 숨겨짐) */}
           <div className="relative z-10 pr-8 overflow-hidden">
             <Link href="/" className="text-2xl font-bold tracking-tight text-primary md:text-3xl cursor-pointer flex-shrink-0 relative z-20">
@@ -123,16 +127,28 @@ export function Header() {
           </nav>
 
           {/* 모바일 메뉴 버튼: 작은 화면에서만 표시 */}
-          <button className="flex items-center gap-1 text-sm text-foreground md:hidden">
+          <button 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="flex items-center gap-1 text-sm text-foreground md:hidden"
+          >
             메뉴
-            <ChevronDown className="h-4 w-4" />
+            <ChevronDown className={cn(
+              "h-4 w-4 transition-transform duration-300",
+              isMobileMenuOpen && "rotate-180"
+            )} />
           </button>
         </div>
 
         {/* --- 오른쪽 섹션: 검색, 알림, 프로필 --- */}
-        <div className="flex items-center gap-4">
+        <div className={cn(
+          "flex items-center gap-4",
+          isSearchActive && "w-full md:w-auto" // 모바일에서 검색 활성화 시 전체 너비
+        )}>
           {/* 검색: 버튼 또는 확장형 입력창 */}
-          <div className="relative flex items-center">
+          <div className={cn(
+            "relative flex items-center",
+            isSearchActive && "flex-1" // 검색 활성화 시 전체 너비 사용
+          )}>
             {!isSearchActive ? (
               <button 
                 onClick={() => setIsSearchActive(true)}
@@ -143,26 +159,27 @@ export function Header() {
             ) : (
               <div 
                 className={cn(
-                  "flex items-center transition-all duration-500 ease-out origin-right",
-                  isSearchActive ? "w-[800px] opacity-100 scale-x-100" : "w-0 opacity-0 scale-x-0"
+                  "flex items-center transition-all duration-500 ease-out",
+                  "w-full md:w-[800px]", // 모바일: 전체 너비, 데스크탑: 800px
+                  isSearchActive ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0"
                 )}
               >
                 <div className="relative flex-1">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
                   <input
                     ref={searchInputRef}
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="영화, 시리즈를 검색하세요..."
-                    className="w-full bg-black/50 border border-white/20 rounded-full pl-12 pr-12 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-lg"
+                    className="w-full bg-black/50 border border-white/20 rounded-full pl-10 md:pl-12 pr-10 md:pr-12 py-2 md:py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-lg"
                   />
                   {isSearching ? (
-                    <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground animate-spin" />
+                    <Loader2 className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground animate-spin" />
                   ) : (
                     <button
                       onClick={handleCloseSearch}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground hover:text-muted-foreground transition-colors p-1 hover:bg-white/10 rounded-full"
+                      className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 text-foreground hover:text-muted-foreground transition-colors p-1 hover:bg-white/10 rounded-full"
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -172,13 +189,19 @@ export function Header() {
             )}
           </div>
           
-          {/* 알림 버튼 */}
-          <button className="text-foreground hover:text-muted-foreground transition-colors p-1">
+          {/* 알림 버튼 (검색 활성화 시 모바일에서 숨김) */}
+          <button className={cn(
+            "text-foreground hover:text-muted-foreground transition-colors p-1",
+            isSearchActive && "hidden md:block"
+          )}>
             <Bell className="h-5 w-5" />
           </button>
           
-          {/* 프로필 섹션 */}
-          <button className="flex items-center gap-2 group">
+          {/* 프로필 섹션 (검색 활성화 시 모바일에서 숨김) */}
+          <button className={cn(
+            "flex items-center gap-2 group",
+            isSearchActive && "hidden md:flex"
+          )}>
             {/* 프로필 이미지 박스 (primary 컬러 배경) */}
             <div className="h-8 w-8 rounded bg-primary transition-transform group-hover:scale-105" />
             {/* 드롭다운 화살표 */}
@@ -186,6 +209,44 @@ export function Header() {
           </button>
         </div>
       </div>
+
+      {/* 모바일 드롭다운 메뉴 */}
+      {isMobileMenuOpen && (
+        <div className="absolute left-0 right-0 top-full bg-black/95 backdrop-blur-md border-t border-white/10 md:hidden z-50">
+          <nav className="flex flex-col px-6 py-4 space-y-3">
+            <MobileNavItem 
+              href="/" 
+              label="홈" 
+              active={pathname === "/"} 
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <MobileNavItem 
+              href="/series" 
+              label="시리즈" 
+              active={pathname === "/series"} 
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <MobileNavItem 
+              href="/movies" 
+              label="영화" 
+              active={pathname === "/movies"} 
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <MobileNavItem 
+              href="/trending" 
+              label="NEW! 요즘 대세 콘텐츠" 
+              active={pathname === "/trending"} 
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <MobileNavItem 
+              href="/my-list" 
+              label="내가 찜한 리스트" 
+              active={pathname === "/my-list"} 
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+          </nav>
+        </div>
+      )}
 
       {/* 블러 오버레이 (검색 활성화 시 뒤쪽 콘텐츠 흐리게) */}
       {isSearchActive && searchQuery.trim() && (
@@ -307,6 +368,36 @@ function NavItem({
         transitionDelay: isHiding ? `${delay}ms` : "0ms",
         transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)"
       }}
+    >
+      {label}
+    </Link>
+  );
+}
+
+/**
+ * 모바일 내비게이션 아이템
+ */
+function MobileNavItem({ 
+  href, 
+  label, 
+  active = false,
+  onClick
+}: { 
+  href: string; 
+  label: string; 
+  active?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className={cn(
+        "text-base font-medium transition-colors hover:text-foreground py-2 px-3 rounded-md",
+        active 
+          ? "text-foreground font-bold bg-white/10" 
+          : "text-muted-foreground hover:bg-white/5"
+      )}
     >
       {label}
     </Link>
