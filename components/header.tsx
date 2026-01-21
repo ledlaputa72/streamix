@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Search, Bell, ChevronDown, X, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { getImagePath } from "@/lib/tmdb";
 
@@ -21,6 +21,7 @@ export function Header() {
   const [isSearching, setIsSearching] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
@@ -318,11 +319,13 @@ export function Header() {
                     const href = isTV ? `/tv-detail?id=${item.id}` : `/movie-detail?id=${item.id}`;
 
                     return (
-                      <Link
+                      <div
                         key={item.id}
-                        href={href}
-                        onClick={handleCloseSearch}
-                        className="flex gap-4 rounded-md bg-card/50 p-3 transition-all hover:bg-card/80 hover:scale-[1.02] group"
+                        onClick={() => {
+                          router.push(href);
+                          handleCloseSearch();
+                        }}
+                        className="flex gap-4 rounded-md bg-card/50 p-3 transition-all hover:bg-card/80 hover:scale-[1.02] group cursor-pointer"
                       >
                         {/* 썸네일 */}
                         <div className="relative w-20 h-28 flex-shrink-0 overflow-hidden rounded-md bg-muted">
@@ -363,7 +366,7 @@ export function Header() {
                             </p>
                           )}
                         </div>
-                      </Link>
+                      </div>
                     );
                   })}
                 </div>
