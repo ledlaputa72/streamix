@@ -106,7 +106,7 @@ export function Header() {
         {/* --- 왼쪽 섹션: 로고 및 내비게이션 --- */}
         <div className={cn(
           "flex items-center gap-8 flex-1 relative transition-all duration-300",
-          isSearchActive && "md:flex hidden" // 모바일에서 검색 활성화 시 숨김
+          isSearchActive && "hidden md:flex" // 모바일에서 검색 활성화 시 숨김, 데스크탑에서는 유지
         )}>
           {/* 로고 영역 (메뉴가 이 뒤로 숨겨짐) */}
           <div className="relative z-10 pr-8 overflow-hidden">
