@@ -4,14 +4,16 @@ import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 import { getImagePath } from "@/lib/tmdb";
 import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface MovieRowProps {
   title: string;
   movies: any[];
   hrefBase?: string;
+  loading?: boolean;
 }
 
-export function MovieRow({ title, movies, hrefBase = "movie" }: MovieRowProps) {
+export function MovieRow({ title, movies, hrefBase = "movie", loading = false }: MovieRowProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
@@ -99,7 +101,19 @@ export function MovieRow({ title, movies, hrefBase = "movie" }: MovieRowProps) {
             WebkitOverflowScrolling: "touch",
           }}
         >
-          {movies.map((movie) => (
+          {loading ? (
+            // 로딩 중일 때 스켈레톤 표시 (6개)
+            Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="min-w-[200px] flex-shrink-0 animate-pulse">
+                <div className="w-full h-[300px] rounded-md bg-gradient-to-br from-zinc-800/80 via-zinc-800/60 to-zinc-800/80 relative overflow-hidden">
+                  {/* 넷플릭스 스타일 shimmer 효과 */}
+                  <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-zinc-700/30 to-transparent" />
+                </div>
+                <div className="mt-2 h-4 w-3/4 rounded bg-zinc-800/60" />
+              </div>
+            ))
+          ) : (
+            movies.map((movie) => (
             // TMDB Movie vs TV: title 대신 name을 쓸 수 있음
             // (TV 데이터의 경우 movie.name)
             (() => {
@@ -141,7 +155,8 @@ export function MovieRow({ title, movies, hrefBase = "movie" }: MovieRowProps) {
             </Link>
               );
             })()
-          ))}
+          ))
+          )}
         </div>
 
         {/* Right Arrow */}
