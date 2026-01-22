@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Play, ExternalLink, Star } from "lucide-react";
-import { getMovieDetails, getImagePath } from "@/lib/tmdb";
+import { getImagePath } from "@/lib/tmdb";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -39,18 +39,33 @@ export function MovieDetailSheet({
       setLoading(true);
       setMovieDetails(null);
 
-      getMovieDetails(movieId.toString())
-        .then((data) => {
+      // 클라이언트에서 직접 API 호출
+      const fetchMovieDetails = async () => {
+        try {
+          const endpoint = hrefBase === "tv" 
+            ? `${process.env.NEXT_PUBLIC_TMDB_BASE_URL}/tv/${movieId}`
+            : `${process.env.NEXT_PUBLIC_TMDB_BASE_URL}/movie/${movieId}`;
+          
+          const response = await fetch(
+            `${endpoint}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=ko-KR`
+          );
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch details for id: ${movieId}`);
+          }
+
+          const data = await response.json();
           setMovieDetails(data);
-        })
-        .catch((error) => {
+        } catch (error) {
           console.error("Failed to fetch movie details:", error);
-        })
-        .finally(() => {
+        } finally {
           setLoading(false);
-        });
+        }
+      };
+
+      fetchMovieDetails();
     }
-  }, [isOpen, movieId]);
+  }, [isOpen, movieId, hrefBase]);
 
   const title = movieDetails?.title || movieDetails?.name || "영화 정보";
   const overview = movieDetails?.overview || "줄거리 정보가 없습니다.";
