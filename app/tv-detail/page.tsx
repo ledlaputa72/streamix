@@ -154,7 +154,7 @@ function TVDetailContent() {
       )}
 
       {/* 비슷한 콘텐츠 */}
-      {data.mappedSimilarTV.length > 0 && <SimilarContent movies={data.mappedSimilarTV} hrefBase="tv-detail" />}
+      {data.mappedSimilarTV.length > 0 && <SimilarContent movies={data.mappedSimilarTV} hrefBase="tv" />}
 
       <footer className="border-t border-border px-6 py-12 md:px-12 lg:px-16">
         <p className="text-xs text-muted-foreground">© 2026 STREAMIX, Inc.</p>
