@@ -25,6 +25,7 @@ export function Header() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
+  const searchResultsRef = useRef<HTMLDivElement>(null);
 
   // 스크롤 이벤트 감지
   useEffect(() => {
@@ -95,7 +96,9 @@ export function Header() {
       if (
         isSearchActive &&
         searchContainerRef.current &&
-        !searchContainerRef.current.contains(event.target as Node)
+        !searchContainerRef.current.contains(event.target as Node) &&
+        // 검색 결과 메뉴 내부 클릭은 제외
+        !(searchResultsRef.current && searchResultsRef.current.contains(event.target as Node))
       ) {
         handleCloseSearch();
       }
@@ -299,6 +302,7 @@ export function Header() {
       {/* 메가메뉴 검색 결과 */}
       {isSearchActive && searchQuery.trim() && (
         <div 
+          ref={searchResultsRef}
           className="absolute left-0 right-0 top-full mt-1 bg-black/95 backdrop-blur-xl border-t border-white/10 shadow-2xl max-h-[70vh] overflow-y-auto z-50"
           onClick={(e) => e.stopPropagation()} // 검색 결과 영역 클릭 시 오버레이로 이벤트 전파 방지
         >
