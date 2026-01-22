@@ -3,8 +3,8 @@
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 import { getImagePath } from "@/lib/tmdb";
-import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MovieDetailSheet } from "@/components/movie-detail-sheet";
 
 interface MovieRowProps {
   title: string;
@@ -17,6 +17,8 @@ export function MovieRow({ title, movies, hrefBase = "movie", loading = false }:
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
+  const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const handleScroll = () => {
     if (scrollContainerRef.current) {
@@ -113,49 +115,48 @@ export function MovieRow({ title, movies, hrefBase = "movie", loading = false }:
               </div>
             ))
           ) : (
-            movies.map((movie) => (
-            // TMDB Movie vs TV: title 대신 name을 쓸 수 있음
-            // (TV 데이터의 경우 movie.name)
-            (() => {
+            movies.map((movie) => {
               const displayTitle: string = movie?.title ?? movie?.name ?? "";
               const posterPath: string | null | undefined = movie?.poster_path;
 
               return (
-            <Link
-              key={movie.id}
-              href={`/${hrefBase}-detail?id=${movie.id}`}
-              className="min-w-[200px] flex-shrink-0 transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer group relative"
-            >
-              <div className="relative overflow-hidden rounded-md">
-                {posterPath ? (
-                  <>
-                    <img
-                      src={getImagePath(posterPath)}
-                      alt={displayTitle}
-                      className="object-cover w-full h-[300px] transition-opacity duration-300"
-                    />
-                    {/* 어두운 오버레이와 재생 아이콘 */}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <div className="flex items-center justify-center w-16 h-16 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm">
-                        <Play className="h-8 w-8 text-white fill-white" />
+                <div
+                  key={movie.id}
+                  onClick={() => {
+                    setSelectedMovieId(movie.id);
+                    setIsSheetOpen(true);
+                  }}
+                  className="min-w-[200px] flex-shrink-0 transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer group relative"
+                >
+                  <div className="relative overflow-hidden rounded-md">
+                    {posterPath ? (
+                      <>
+                        <img
+                          src={getImagePath(posterPath)}
+                          alt={displayTitle}
+                          className="object-cover w-full h-[300px] transition-opacity duration-300"
+                        />
+                        {/* 어두운 오버레이와 재생 아이콘 */}
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                          <div className="flex items-center justify-center w-16 h-16 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm">
+                            <Play className="h-8 w-8 text-white fill-white" />
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="rounded-md bg-gray-800 w-full h-[300px] flex items-center justify-center">
+                        <span className="text-gray-500 text-sm">이미지 없음</span>
                       </div>
-                    </div>
-                  </>
-                ) : (
-                  <div className="rounded-md bg-gray-800 w-full h-[300px] flex items-center justify-center">
-                    <span className="text-gray-500 text-sm">이미지 없음</span>
+                    )}
                   </div>
-                )}
-              </div>
-              {displayTitle && (
-                <p className="mt-2 text-sm text-gray-300 line-clamp-1 group-hover:text-white transition-colors">
-                  {displayTitle}
-                </p>
-              )}
-            </Link>
+                  {displayTitle && (
+                    <p className="mt-2 text-sm text-gray-300 line-clamp-1 group-hover:text-white transition-colors">
+                      {displayTitle}
+                    </p>
+                  )}
+                </div>
               );
-            })()
-          ))
+            })
           )}
         </div>
 
@@ -172,6 +173,14 @@ export function MovieRow({ title, movies, hrefBase = "movie", loading = false }:
           <ChevronRight className="h-8 w-8 text-white drop-shadow-lg" />
         </button>
       </div>
+
+      {/* Movie Detail Sheet */}
+      <MovieDetailSheet
+        movieId={selectedMovieId}
+        isOpen={isSheetOpen}
+        onClose={() => setIsSheetOpen(false)}
+        hrefBase={hrefBase}
+      />
     </section>
   );
 }
